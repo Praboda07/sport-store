@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <article class="bg-white rounded-lg shadow p-4 hover:shadow-lg transition">
+ <article class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-lg transition hover:-translate-y-0.5">
     <img
       :src="product.thumbnail"
       :alt="product.title"
