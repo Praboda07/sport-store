@@ -7,7 +7,8 @@ defineProps<{
 </script>
 
 <template>
- <article class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-lg transition hover:-translate-y-0.5">
+  <article class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-lg transition hover:-translate-y-1 hover:scale-105 cursor-pointer">
+
     <img
       :src="product.thumbnail"
       :alt="product.title"
@@ -23,13 +24,5 @@ defineProps<{
       {{ product.description }}
     </p>
 
-    <div class="mt-3 flex items-center justify-between">
-      <span class="font-bold text-blue-600">${{ product.price }}</span>
-      <span class="text-sm text-gray-600">⭐ {{ product.rating }}</span>
-    </div>
-
-    <p class="text-xs text-gray-400 mt-1">
-      {{ product.category }}
-    </p>
   </article>
 </template>
