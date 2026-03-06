@@ -5,7 +5,6 @@ import { sportsifyProducts } from '../utils/sportsify'
 import { fetchProducts } from '../services/productsApi'
 import ProductList from '../components/ProductList.vue'
 
-// reactive state
 const products = ref<DisplayProduct[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -13,7 +12,6 @@ const error = ref<string | null>(null)
 const search = ref('')
 const selectedCategory = ref('all')
 
-// fetch products
 async function loadProducts() {
   loading.value = true
   error.value = null
@@ -28,17 +26,16 @@ async function loadProducts() {
   }
 }
 
-// categories for filter
 const categories = computed(() => {
-  const set = new Set(products.value.map(p => p.category))
+  const set = new Set(products.value.map((p) => p.category))
   return ['all', ...set]
 })
 
-// filtered list
 const filteredProducts = computed(() => {
-  return products.value.filter(p => {
+  return products.value.filter((p) => {
     const matchSearch =
-      p.title.toLowerCase().includes(search.value.toLowerCase())
+      p.title.toLowerCase().includes(search.value.toLowerCase()) ||
+      p.description.toLowerCase().includes(search.value.toLowerCase())
 
     const matchCategory =
       selectedCategory.value === 'all' ||
@@ -48,90 +45,145 @@ const filteredProducts = computed(() => {
   })
 })
 
-// results counter
 const resultsCount = computed(() => filteredProducts.value.length)
 
-// clear filters
 function clearFilters() {
   search.value = ''
   selectedCategory.value = 'all'
 }
 
+function selectProduct(product: DisplayProduct) {
+  console.log('Selected product:', product)
+}
+
 onMounted(loadProducts)
 </script>
 
-
 <template>
   <div class="min-h-screen bg-gray-50">
+    <main class="max-w-7xl mx-auto px-6 py-8">
 
-    <!-- HEADER -->
-    <header class="bg-white border-b">
-      <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-        
-        <span class="text-gray-600 text-sm">
-          {{ resultsCount }} items found
-        </span>
-      </div>
-    </header>
+      <!-- PRODUCTS SECTION -->
+      <section id="products">
+        <!-- top bar -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div class="flex items-center gap-3">
+            <label class="text-gray-700 font-medium">Category</label>
 
-    <main class="max-w-6xl mx-auto px-4 py-6">
+            <select
+              v-model="selectedCategory"
+              class="border rounded-lg px-4 py-2 bg-white shadow-sm"
+            >
+              <option
+                v-for="category in categories"
+                :key="category"
+                :value="category"
+              >
+                {{ category }}
+              </option>
+            </select>
 
-      <!-- SEARCH + FILTER BAR -->
-      <div class="flex flex-col md:flex-row justify-between items-center gap-3 mb-6">
+            <button
+              type="button"
+              @click="clearFilters"
+              class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 transition"
+            >
+              Clear
+            </button>
+          </div>
 
-        <!-- FILTER -->
-        <div class="flex items-center gap-2">
-          <label class="text-sm text-gray-600">Category</label>
-
-          <select
-            v-model="selectedCategory"
-            class="border rounded px-3 py-2"
-          >
-            <option v-for="c in categories" :key="c" :value="c">
-              {{ c }}
-            </option>
-          </select>
-
-          <button
-            @click="clearFilters"
-            class="px-3 py-2 border rounded bg-gray-100 hover:bg-gray-200 text-sm"
-          >
-            Clear
-          </button>
+          <div class="w-full md:w-96">
+            <div class="flex items-center gap-2 border rounded-lg bg-white px-4 py-2 shadow-sm">
+              <span class="text-gray-400">🔍</span>
+              <input
+                v-model="search"
+                type="text"
+                placeholder="Search sports items..."
+                class="w-full outline-none bg-transparent"
+              />
+            </div>
+          </div>
         </div>
 
-        <!-- SEARCH -->
-        <div class="flex items-center border rounded px-3 py-2 w-full md:w-80 bg-white">
-          <span class="mr-2">🔍</span>
+        <!-- results -->
+        <div class="flex justify-end mb-4">
+          <p class="text-gray-600">
+            {{ resultsCount }} items found
+          </p>
+        </div>
 
-          <input
-            v-model="search"
-            type="text"
-            placeholder="Search sports items..."
-            class="outline-none w-full"
+        <!-- loading -->
+        <div v-if="loading" class="text-center py-12 text-gray-500 text-lg">
+          Loading products...
+        </div>
+
+        <!-- error -->
+        <div
+          v-else-if="error"
+          class="bg-red-100 text-red-700 px-4 py-3 rounded-lg"
+        >
+          {{ error }}
+        </div>
+
+        <!-- products -->
+        <div v-else>
+          <div
+            v-if="filteredProducts.length === 0"
+            class="text-center py-12 text-gray-500"
+          >
+            No sports items found.
+          </div>
+
+          <ProductList
+            v-else
+            :products="filteredProducts"
+            @select="selectProduct"
           />
         </div>
+      </section>
 
-      </div>
+      <!-- ABOUT SECTION -->
+      <section id="about" class="mt-20">
+        <h2 class="text-3xl font-bold mb-6 text-gray-900">
+          About Our Store
+        </h2>
 
-      <!-- LOADING -->
-      <p v-if="loading" class="text-gray-600">
-        Loading products...
-      </p>
+        <p class="text-gray-600 mb-10 max-w-3xl">
+          Sports Item Store is a modern sports equipment shop built with Vue.
+          Our goal is to provide athletes, beginners, and professionals with
+          high-quality sports gear. You can browse, search, and explore many
+          sports items in one place.
+        </p>
 
-      <!-- ERROR -->
-      <div
-        v-else-if="error"
-        class="bg-red-100 text-red-700 p-3 rounded"
-      >
-        {{ error }}
-      </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div class="text-3xl mb-3">🏅</div>
+            <h3 class="font-semibold text-lg mb-2">Quality Equipment</h3>
+            <p class="text-gray-500 text-sm">
+              We provide high-quality sports gear for professional training
+              and everyday fitness activities.
+            </p>
+          </div>
 
-      <!-- PRODUCTS -->
-      <ProductList
-        v-else
-        :products="filteredProducts"
-      />
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div class="text-3xl mb-3">⚡</div>
+            <h3 class="font-semibold text-lg mb-2">Fast Browsing</h3>
+            <p class="text-gray-500 text-sm">
+              Quickly search and filter sports equipment using our modern
+              Vue-powered interface.
+            </p>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
+            <div class="text-3xl mb-3">🏋️</div>
+            <h3 class="font-semibold text-lg mb-2">30+ Sports Items</h3>
+            <p class="text-gray-500 text-sm">
+              Our catalog contains a growing collection of sports equipment
+              from different categories.
+            </p>
+          </div>
+        </div>
+      </section>
 
     </main>
   </div>
