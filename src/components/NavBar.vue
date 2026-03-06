@@ -39,10 +39,10 @@
           </a>
 
           <a
-            href="#categories"
+            href="#about"   onmouseclick="WELCOME TO MY STORE"
             class="text-sm font-medium text-gray-700 hover:text-blue-600 transition"
           >
-            Categories
+            About
           </a>
 
           <a
