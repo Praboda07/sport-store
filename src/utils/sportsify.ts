@@ -17,36 +17,86 @@ const sportsImages = [
   dumbbells
 ]
 const sportsNames = [
-  'football',
-  'basketball',
-  'cricket Bat',
-  'tennis Racket',
-  'yoga Mat',
-  'dumbbells'
+  "Football",
+  "Basketball",
+  "Cricket Bat",
+  "Tennis Racket",
+  "Yoga Mat",
+  "Dumbbells",
+  "Boxing Gloves",
+  "Skipping Rope",
+  "Baseball Bat",
+  "Running Shoes",
+  "Gym Bag",
+  "Water Bottle",
+  "Cycling Helmet",
+  "Badminton Racket",
+  "Table Tennis Paddle",
+  "Hockey Stick",
+  "Golf Club",
+  "Fitness Tracker",
+  "Resistance Bands",
+  "Pull-up Bar",
+  "Training Cones",
+  "Agility Ladder",
+  "Knee Support",
+  "Wrist Wraps",
+  "Protein Shaker",
+  "Gym Towel",
+  "Exercise Ball",
+  "Ankle Weights",
+  "Speed Parachute",
+  "Jump Box"
 ]
 
 const sportsCategories = [
-  'Ball Sports',
-  'Ball Sports',
-  'Bat & Ball',
-  'Racket Sports',
-  'Fitness',
-  'Gym Equipment'
+  "Ball Sports",
+  "Ball Sports",
+  "Ball Sports",
+  "Racket Sports",
+  "Fitness & Gym",
+  "Fitness & Gym",
+  "Training Equipment",
+  "Training Equipment",
+  "Ball Sports",
+  "Accessories & Gear",
+  "Accessories & Gear",
+  "Accessories & Gear",
+  "Accessories & Gear",
+  "Racket Sports",
+  "Racket Sports",
+  "Ball Sports",
+  "Ball Sports",
+  "Accessories & Gear",
+  "Fitness & Gym",
+  "Fitness & Gym",
+  "Training Equipment",
+  "Training Equipment",
+  "Training Equipment",
+  "Training Equipment",
+  "Accessories & Gear",
+  "Accessories & Gear",
+  "Fitness & Gym",
+  "Fitness & Gym",
+  "Training Equipment",
+  "Fitness & Gym"
 ]
-
 export function sportsifyProducts(products: Product[]): DisplayProduct[] {
- return products.map((p, index) => {
-  const i = index % sportsNames.length
+  return products.map((p, index) => {
 
-  return {
-    id: p.id,
-    title: sportsNames[i] || "Sports Item",
-    description: `Professional ${sportsNames[i] || "sports item"} for sports training.`,
-    price: p.price,
-    category: sportsCategories[i] || "Sports Equipment",
-    rating: p.rating,
-    thumbnail: sportsImages[i]!,
-    images: [sportsImages[i]!],
-  }
-})
+    const i = index % sportsNames.length
+    const imgIndex = index % sportsImages.length
+
+    return {
+      id: p.id,
+      title: sportsNames[i] || "Sports Item",
+      description: `Professional ${sportsNames[i] || "sports item"} for sports training.`,
+      price: p.price,
+      category: sportsCategories[i] || "Sports Equipment",
+      rating: p.rating,
+      thumbnail: sportsImages[imgIndex] || "",
+      images: [sportsImages[imgIndex] || ""]
+    }
+
+  })
 }
