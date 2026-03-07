@@ -14,10 +14,13 @@
 
           <div>
             <h1 class="text-xl sm:text-2xl font-extrabold text-gray-900 leading-none">
-              Sports Item Store
+              KRS SPORT CO.
             </h1>
             <p class="text-xs text-gray-500 hidden sm:block">
-              Premium gear for every athlete
+              Elevating your game through precision and power. ⚡️<br>
+              We provide premium, athlete-tested gear designed for those who refuse to settle for second place.<br>
+               From the field to the finish line, KRS is your partner in peak performance.<br>
+              Precision. Power. Pro-Grade.
             </p>
           </div>
         </div>
