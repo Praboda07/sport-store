@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import type { Product } from '../types/product'
+import type { DisplayProduct } from '../types/DisplayProduct'
 import ProductCard from './ProductCard.vue'
 
 defineProps<{
-  products: Product[]
+  products: DisplayProduct[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'select', product: Product): void
+  (e: 'select', product: DisplayProduct): void
 }>()
 </script>
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
     <button
-  v-for="p in products"
-  :key="p.id"
-  type="button"
-  class="text-left transition transform hover:scale-105"
-  @click="emit('select', p)"
->
-  <ProductCard :product="p" />
-</button>
+      v-for="product in products"
+      :key="product.id"
+      type="button"
+      class="text-left transition transform hover:scale-105"
+      @click="emit('select', product)"
+    >
+      <ProductCard :product="product" />
+    </button>
   </div>
 </template>

@@ -4,6 +4,7 @@ import type { DisplayProduct } from '../types/DisplayProduct'
 import { sportsifyProducts } from '../utils/sportsify'
 import { fetchProducts } from '../services/productsApi'
 import ProductList from '../components/ProductList.vue'
+import ProductDetail from '../components/ProductDetail.vue'
 
 const products = ref<DisplayProduct[]>([])
 const loading = ref(true)
@@ -11,6 +12,9 @@ const error = ref<string | null>(null)
 
 const search = ref('')
 const selectedCategory = ref('all')
+
+const selectedProduct = ref<DisplayProduct | null>(null)
+const cart = ref<DisplayProduct[]>([])
 
 async function loadProducts() {
   loading.value = true
@@ -53,7 +57,17 @@ function clearFilters() {
 }
 
 function selectProduct(product: DisplayProduct) {
-  console.log('Selected product:', product)
+  selectedProduct.value = product
+}
+
+function closeProductDetail() {
+  selectedProduct.value = null
+}
+
+function addToCart(product: DisplayProduct) {
+  cart.value.push(product)
+  console.log('Cart:', cart.value)
+  selectedProduct.value = null
 }
 
 onMounted(loadProducts)
@@ -65,9 +79,8 @@ onMounted(loadProducts)
 
       <!-- PRODUCTS SECTION -->
       <section id="products">
-        <!-- top bar -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
             <label class="text-gray-700 font-medium">Category</label>
 
             <select
@@ -105,19 +118,20 @@ onMounted(loadProducts)
           </div>
         </div>
 
-        <!-- results -->
-        <div class="flex justify-end mb-4">
+        <div class="flex justify-between items-center mb-4">
           <p class="text-gray-600">
             {{ resultsCount }} items found
           </p>
+
+          <p class="text-gray-600 font-medium">
+            Cart: {{ cart.length }}
+          </p>
         </div>
 
-        <!-- loading -->
         <div v-if="loading" class="text-center py-12 text-gray-500 text-lg">
           Loading products...
         </div>
 
-        <!-- error -->
         <div
           v-else-if="error"
           class="bg-red-100 text-red-700 px-4 py-3 rounded-lg"
@@ -125,7 +139,6 @@ onMounted(loadProducts)
           {{ error }}
         </div>
 
-        <!-- products -->
         <div v-else>
           <div
             v-if="filteredProducts.length === 0"
@@ -184,6 +197,14 @@ onMounted(loadProducts)
           </div>
         </div>
       </section>
+
+      <!-- PRODUCT DETAIL MODAL -->
+      <ProductDetail
+        v-if="selectedProduct"
+        :product="selectedProduct"
+        @close="closeProductDetail"
+        @add-to-cart="addToCart"
+      />
 
     </main>
   </div>
