@@ -33,23 +33,14 @@ defineProps<{
         </a>
       </nav>
 
-      <!-- Cart -->
-      <div class="relative cursor-pointer">
-
-        <!-- Cart Icon -->
-        <div class="bg-gray-100 p-3 rounded-lg hover:bg-gray-200 transition text-xl">
-          🛒
-        </div>
-
-        <!-- Cart Badge -->
-        <span
-          v-if="cartCount > 0"
-          class="absolute -top-2 -left-2 bg-orange-600 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full"
-        >
-          {{ cartCount }}
-        </span>
-
-      </div>
+      <!-- Cart Button -->
+      <button
+        type="button"
+        class="flex items-center gap-2 bg-blue-100 text-gray-800 px-4 py-2 rounded-xl hover:bg-blue-200 transition"
+      >
+        <span class="text-xl">🛒</span>
+        <span class="font-semibold">{{ cartCount }}</span>
+      </button>
 
     </div>
   </header>

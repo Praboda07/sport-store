@@ -6,6 +6,10 @@ import { fetchProducts } from '../services/productsApi'
 import ProductList from '../components/ProductList.vue'
 import ProductDetail from '../components/ProductDetail.vue'
 
+const emit = defineEmits<{
+  (e: 'add-to-cart', product: DisplayProduct): void
+}>()
+
 const products = ref<DisplayProduct[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -14,7 +18,6 @@ const search = ref('')
 const selectedCategory = ref('all')
 
 const selectedProduct = ref<DisplayProduct | null>(null)
-const cart = ref<DisplayProduct[]>([])
 
 async function loadProducts() {
   loading.value = true
@@ -65,8 +68,7 @@ function closeProductDetail() {
 }
 
 function addToCart(product: DisplayProduct) {
-  cart.value.push(product)
-  console.log('Cart:', cart.value)
+  emit('add-to-cart', product)
   selectedProduct.value = null
 }
 
@@ -76,7 +78,6 @@ onMounted(loadProducts)
 <template>
   <div class="min-h-screen bg-gray-50">
     <main class="max-w-7xl mx-auto px-6 py-8">
-
       <!-- PRODUCTS SECTION -->
       <section id="products">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
@@ -118,15 +119,7 @@ onMounted(loadProducts)
           </div>
         </div>
 
-        <div class="flex justify-between items-center mb-4">
-          <p class="text-gray-600">
-            {{ resultsCount }} items found
-          </p>
-
-          <p class="text-gray-600 font-medium">
-            Cart: {{ cart.length }}
-          </p>
-        </div>
+       
 
         <div v-if="loading" class="text-center py-12 text-gray-500 text-lg">
           Loading products...
@@ -205,7 +198,6 @@ onMounted(loadProducts)
         @close="closeProductDetail"
         @add-to-cart="addToCart"
       />
-
     </main>
   </div>
 </template>
