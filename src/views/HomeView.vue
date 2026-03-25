@@ -19,6 +19,7 @@ const selectedCategory = ref('all')
 
 const selectedProduct = ref<DisplayProduct | null>(null)
 
+// Load products
 async function loadProducts() {
   loading.value = true
   error.value = null
@@ -33,11 +34,13 @@ async function loadProducts() {
   }
 }
 
+// Categories
 const categories = computed(() => {
   const set = new Set(products.value.map((p) => p.category))
   return ['all', ...set]
 })
 
+// Filtering
 const filteredProducts = computed(() => {
   return products.value.filter((p) => {
     const matchSearch =
@@ -52,21 +55,23 @@ const filteredProducts = computed(() => {
   })
 })
 
-const resultsCount = computed(() => filteredProducts.value.length)
-
+// Clear filters
 function clearFilters() {
   search.value = ''
   selectedCategory.value = 'all'
 }
 
+// Open product detail
 function selectProduct(product: DisplayProduct) {
   selectedProduct.value = product
 }
 
+// Close modal
 function closeProductDetail() {
   selectedProduct.value = null
 }
 
+// Add to cart (emit to App.vue)
 function addToCart(product: DisplayProduct) {
   emit('add-to-cart', product)
   selectedProduct.value = null
@@ -78,9 +83,14 @@ onMounted(loadProducts)
 <template>
   <div class="min-h-screen bg-gray-50">
     <main class="max-w-7xl mx-auto px-6 py-8">
+
       <!-- PRODUCTS SECTION -->
       <section id="products">
+
+        <!-- FILTER + SEARCH -->
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+
+          <!-- Category -->
           <div class="flex items-center gap-3 flex-wrap">
             <label class="text-gray-700 font-medium">Category</label>
 
@@ -106,6 +116,7 @@ onMounted(loadProducts)
             </button>
           </div>
 
+          <!-- Search -->
           <div class="w-full md:w-96">
             <div class="flex items-center gap-2 border rounded-lg bg-white px-4 py-2 shadow-sm">
               <span class="text-gray-400">🔍</span>
@@ -117,14 +128,15 @@ onMounted(loadProducts)
               />
             </div>
           </div>
+
         </div>
 
-       
-
+        <!-- LOADING -->
         <div v-if="loading" class="text-center py-12 text-gray-500 text-lg">
           Loading products...
         </div>
 
+        <!-- ERROR -->
         <div
           v-else-if="error"
           class="bg-red-100 text-red-700 px-4 py-3 rounded-lg"
@@ -132,7 +144,9 @@ onMounted(loadProducts)
           {{ error }}
         </div>
 
+        <!-- PRODUCTS -->
         <div v-else>
+
           <div
             v-if="filteredProducts.length === 0"
             class="text-center py-12 text-gray-500"
@@ -162,12 +176,12 @@ onMounted(loadProducts)
         </p>
 
         <div class="grid md:grid-cols-3 gap-8">
+
           <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
             <div class="text-3xl mb-3">🏅</div>
             <h3 class="font-semibold text-lg mb-2">Quality Equipment</h3>
             <p class="text-gray-500 text-sm">
-              We provide high-quality sports gear for professional training
-              and everyday fitness activities.
+              High-quality sports gear for training and fitness.
             </p>
           </div>
 
@@ -175,19 +189,18 @@ onMounted(loadProducts)
             <div class="text-3xl mb-3">⚡</div>
             <h3 class="font-semibold text-lg mb-2">Fast Browsing</h3>
             <p class="text-gray-500 text-sm">
-              Quickly search and filter sports equipment using our modern
-              Vue-powered interface.
+              Quickly search and filter items with modern UI.
             </p>
           </div>
 
           <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
             <div class="text-3xl mb-3">🏋️</div>
-            <h3 class="font-semibold text-lg mb-2">30+ Sports Items</h3>
+            <h3 class="font-semibold text-lg mb-2">30+ Items</h3>
             <p class="text-gray-500 text-sm">
-              Our catalog contains a growing collection of sports equipment
-              from different categories.
+              Growing collection of sports equipment.
             </p>
           </div>
+
         </div>
       </section>
 
@@ -198,6 +211,7 @@ onMounted(loadProducts)
         @close="closeProductDetail"
         @add-to-cart="addToCart"
       />
+
     </main>
   </div>
 </template>
