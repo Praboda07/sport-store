@@ -1,28 +1,60 @@
 <script setup lang="ts">
-import type { Product } from '../types/product'
+import type { DisplayProduct } from '../types/DisplayProduct'
 
-defineProps<{
-  product: Product
+const props = defineProps<{
+  product: DisplayProduct
 }>()
+
+const emit = defineEmits<{
+  (e: 'select', product: DisplayProduct): void
+}>()
+
+function handleClick() {
+  emit('select', props.product)
+}
+
+function onImageError(event: Event) {
+  const target = event.target as HTMLImageElement
+  target.src = 'https://picsum.photos/seed/sportfallback/600/400'
+}
 </script>
 
 <template>
-  <article class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-lg transition hover:-translate-y-1 hover:scale-105 cursor-pointer">
-
+  <article
+    class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-lg transition hover:-translate-y-1 cursor-pointer"
+    @click="handleClick"
+  >
     <img
       :src="product.thumbnail"
       :alt="product.title"
-      class="h-40 w-full object-cover rounded transition duration-300 hover:scale-105"
+      class="h-48 w-full object-cover rounded-xl mb-4"
       loading="lazy"
+      @error="onImageError"
     />
 
-    <h3 class="font-semibold mt-2 line-clamp-1">
+    <p class="text-xs font-semibold uppercase tracking-wide text-blue-600 mb-2">
+      {{ product.category }}
+    </p>
+
+    <h3 class="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
       {{ product.title }}
     </h3>
 
-    <p class="bg-white rounded-2xl shadow-sm border p-4 hover:shadow-xl transition duration-300 hover:-translate-y-1">
+    <p class="text-sm text-gray-600 mb-4 line-clamp-2">
       {{ product.description }}
     </p>
 
+    <div class="flex items-center justify-between">
+      <span class="font-bold text-blue-600 text-lg">
+        ${{ product.price }}
+      </span>
+
+      <button
+        type="button"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+      >
+        View Details
+      </button>
+    </div>
   </article>
 </template>

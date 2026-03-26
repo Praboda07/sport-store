@@ -9,18 +9,19 @@ defineProps<{
 const emit = defineEmits<{
   (e: 'select', product: DisplayProduct): void
 }>()
+
+function handleSelect(product: DisplayProduct) {
+  emit('select', product)
+}
 </script>
 
 <template>
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    <button
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <ProductCard
       v-for="product in products"
       :key="product.id"
-      type="button"
-      class="text-left transition transform hover:scale-105"
-      @click="emit('select', product)"
-    >
-      <ProductCard :product="product" />
-    </button>
+      :product="product"
+      @select="handleSelect"
+    />
   </div>
 </template>
