@@ -1,8 +1,6 @@
-// src/utils/sportsify.ts
-
 import type { DisplayProduct } from '../types/DisplayProduct'
+import type { Product } from '../types/product'
 
-// ✅ 30 SPORTS ITEMS (name + description + image)
 const sportsItems = [
   {
     title: 'Professional Football',
@@ -186,8 +184,7 @@ const sportsItems = [
   }
 ]
 
-// ✅ MAIN FUNCTION (NO ERROR)
-export function sportsifyProducts(products: any[]): DisplayProduct[] {
+export function sportsifyProducts(products: Product[]): DisplayProduct[] {
   return products.map((p, index) => {
     const item = sportsItems[index % sportsItems.length]
 
@@ -197,7 +194,9 @@ export function sportsifyProducts(products: any[]): DisplayProduct[] {
       description: item.description,
       price: p.price,
       category: item.category,
-      thumbnail: item.thumbnail
+      thumbnail: item.thumbnail,
+      images: [item.thumbnail],
+      rating: p.rating
     }
   })
 }
