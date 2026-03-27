@@ -189,14 +189,14 @@ export function sportsifyProducts(products: Product[]): DisplayProduct[] {
     const item = sportsItems[index % sportsItems.length]
 
     return {
-      id: p.id,
-      title: item.title,
-      description: item.description,
-      price: p.price,
-      category: item.category,
-      thumbnail: item.thumbnail,
-      images: [item.thumbnail],
-      rating: p.rating
-    }
+  id: p.id,
+  title: item.title,
+  description: item.description,
+  price: p.price,
+  category: item.category,
+  thumbnail: item.thumbnail,
+  images: [item.thumbnail],
+  rating: p.rating
+}
   })
 }
