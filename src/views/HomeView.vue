@@ -36,7 +36,7 @@ const loadProducts = async () => {
   try {
     loading.value = true
     errorMessage.value = ''
-    const data = await fetchProducts(12, 0)
+    const data = await fetchProducts(30, 0)
     products.value = sportsifyProducts(data.products)
   } catch (error) {
     errorMessage.value =
@@ -79,6 +79,7 @@ const closeModal = () => {
 
 const addToCart = (product: DisplayProduct) => {
   cart.value.push(product)
+  selectedProduct.value = null
 }
 
 const openCart = () => {
@@ -95,14 +96,13 @@ const removeCartItem = (index: number) => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-white">
+  <div class="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-white" id="home">
     <NavBar
       :cart-count="cart.length"
       @open-cart="openCart"
     />
 
     <main class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Premium Hero Section -->
       <section
         class="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-white shadow-2xl"
       >
@@ -124,26 +124,8 @@ const removeCartItem = (index: number) => {
 
             <p class="mt-5 max-w-2xl text-base md:text-lg text-slate-300 leading-8">
               Discover professional-quality sports equipment designed for performance,
-              comfort, and style. Shop top categories, explore premium products, and build
-              your perfect game-day collection.
+              comfort, and style.
             </p>
-
-            <div class="mt-8 flex flex-wrap gap-4">
-              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
-                <p class="text-2xl font-bold text-white">{{ products.length }}+</p>
-                <p class="text-sm text-slate-300">Premium Products</p>
-              </div>
-
-              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
-                <p class="text-2xl font-bold text-white">{{ categories.length - 1 }}</p>
-                <p class="text-sm text-slate-300">Sport Categories</p>
-              </div>
-
-              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
-                <p class="text-2xl font-bold text-white">24/7</p>
-                <p class="text-sm text-slate-300">Fast Shopping</p>
-              </div>
-            </div>
           </div>
 
           <div class="flex items-center justify-center">
@@ -151,33 +133,28 @@ const removeCartItem = (index: number) => {
               <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur">
                 <p class="text-4xl mb-3">⚽</p>
                 <h3 class="text-xl font-bold">Football</h3>
-                <p class="mt-2 text-sm text-slate-300">Training kits, boots, gloves and match essentials.</p>
               </div>
 
               <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur mt-8">
                 <p class="text-4xl mb-3">🏏</p>
                 <h3 class="text-xl font-bold">Cricket</h3>
-                <p class="mt-2 text-sm text-slate-300">Premium bats, gloves and performance accessories.</p>
               </div>
 
               <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur -mt-2">
                 <p class="text-4xl mb-3">🏀</p>
                 <h3 class="text-xl font-bold">Basketball</h3>
-                <p class="mt-2 text-sm text-slate-300">Indoor and outdoor essentials for every player.</p>
               </div>
 
               <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur mt-6">
                 <p class="text-4xl mb-3">🎾</p>
                 <h3 class="text-xl font-bold">Tennis</h3>
-                <p class="mt-2 text-sm text-slate-300">Precision rackets and training-ready gear.</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Premium Search/Filter Section -->
-      <section class="mt-8">
+      <section id="collection" class="mt-8">
         <div class="flex items-center justify-between mb-4">
           <div>
             <h2 class="text-2xl font-bold text-slate-900">Shop Collection</h2>
@@ -199,7 +176,7 @@ const removeCartItem = (index: number) => {
         />
       </section>
 
-      <div class="md:hidden mb-6">
+      <div class="md:hidden mb-6 mt-4">
         <span class="rounded-full bg-white shadow-sm border px-4 py-2 text-sm text-slate-600 inline-block">
           Showing <span class="font-bold text-slate-900">{{ filteredProducts.length }}</span> products
         </span>

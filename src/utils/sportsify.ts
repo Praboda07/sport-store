@@ -156,7 +156,7 @@ const sportsItems = [
     title: 'Basketball Jersey',
     description: 'Stylish basketball jersey designed for performance and comfort.',
     category: 'Basketball',
-    thumbnail: 'https://tse3.mm.bing.net/th/id/OIP.h1LGWLef87zK_l3SV31VjAHaJQ?pid=Api&h=220&P=0'
+    thumbnail: 'https://customized.com.ph/wp-content/uploads/2023/08/Basketball-Jersey-Front.jpg'
   },
   {
     title: 'Tennis Cap',

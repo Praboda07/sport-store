@@ -15,7 +15,7 @@ const emit = defineEmits<{
 <template>
   <div
     v-if="products.length > 0"
-    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8"
   >
     <ProductCard
       v-for="product in products"
@@ -28,7 +28,7 @@ const emit = defineEmits<{
 
   <div
     v-else
-    class="bg-white rounded-2xl shadow-sm border p-10 text-center text-slate-500"
+    class="rounded-3xl bg-white border border-slate-200 p-12 text-center text-slate-500 shadow-sm"
   >
     No products found.
   </div>

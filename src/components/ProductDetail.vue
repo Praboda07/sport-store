@@ -9,57 +9,62 @@ const emit = defineEmits<{
   (e: 'close'): void
   (e: 'add-to-cart', product: DisplayProduct): void
 }>()
+
+const handleAddToCart = () => {
+  emit('add-to-cart', props.product)
+  emit('close')
+}
 </script>
 
 <template>
   <div
-    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
+    class="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
     @click.self="emit('close')"
   >
-    <div class="relative bg-white w-full max-w-5xl rounded-3xl shadow-2xl p-6 md:p-8">
+    <div class="relative bg-white w-full max-w-5xl rounded-[2rem] shadow-2xl overflow-hidden">
       <button
         type="button"
         @click="emit('close')"
-        class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700 transition"
+        class="absolute top-5 right-5 z-10 w-12 h-12 rounded-full bg-white shadow text-slate-700 text-2xl hover:text-red-500 transition"
       >
-        ×
+        ✕
       </button>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <div>
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+        <div class="bg-slate-100">
           <img
             :src="props.product.thumbnail"
             :alt="props.product.title"
-            class="w-full h-[360px] object-cover rounded-2xl"
+            class="w-full h-full min-h-[350px] object-cover"
           />
         </div>
 
-        <div>
-          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+        <div class="p-8 flex flex-col justify-center">
+          <span class="inline-block bg-slate-100 px-3 py-1 rounded-full text-sm text-slate-600 mb-3">
+            {{ props.product.category }}
+          </span>
+
+          <h2 class="text-3xl font-bold text-slate-900">
             {{ props.product.title }}
           </h2>
 
-          <p class="text-4xl font-bold text-blue-600 mb-4">
+          <p class="text-2xl font-bold text-blue-600 mt-2">
             ${{ props.product.price }}
           </p>
 
-          <p class="text-yellow-500 text-2xl mb-4">
+          <p class="text-amber-500 mt-2">
             ⭐ {{ props.product.rating }}
           </p>
 
-          <p class="text-gray-500 text-2xl mb-6">
-            Category: {{ props.product.category }}
-          </p>
-
-          <p class="text-gray-600 text-2xl leading-relaxed mb-8">
+          <p class="text-slate-600 mt-4 leading-relaxed">
             {{ props.product.description }}
           </p>
 
-          <div class="flex gap-4">
+          <div class="mt-6 flex gap-4">
             <button
               type="button"
-              @click="emit('add-to-cart', props.product)"
-              class="bg-blue-600 text-white px-8 py-4 rounded-2xl text-2xl hover:bg-blue-700 transition"
+              @click="handleAddToCart"
+              class="bg-slate-950 text-white px-6 py-3 rounded-2xl hover:bg-blue-700 transition"
             >
               Add to Cart
             </button>
@@ -67,7 +72,7 @@ const emit = defineEmits<{
             <button
               type="button"
               @click="emit('close')"
-              class="bg-gray-100 text-gray-800 px-8 py-4 rounded-2xl text-2xl hover:bg-gray-200 transition"
+              class="bg-slate-200 text-slate-800 px-6 py-3 rounded-2xl hover:bg-slate-300 transition"
             >
               Close
             </button>
