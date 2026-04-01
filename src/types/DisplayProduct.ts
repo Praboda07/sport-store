@@ -2,9 +2,10 @@ export interface DisplayProduct {
   id: number
   title: string
   description: string
-  price: number
   category: string
-  thumbnail: string
-  images: string[]
+  price: number
   rating: number
+  stock: number
+  brand: string
+  thumbnail: string
 }

@@ -1,217 +1,246 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
-import type { DisplayProduct } from '../types/DisplayProduct'
-import { sportsifyProducts } from '../utils/sportsify'
-import { fetchProducts } from '../services/productsApi'
+import { computed, onMounted, ref, watch } from 'vue'
+import NavBar from '../components/NavBar.vue'
+import FilterBar from '../components/FilterBar.vue'
 import ProductList from '../components/ProductList.vue'
 import ProductDetail from '../components/ProductDetail.vue'
-
-const emit = defineEmits<{
-  (e: 'add-to-cart', product: DisplayProduct): void
-}>()
+import CartSidebar from '../components/CartSidebar.vue'
+import Footer from '../components/Footer.vue'
+import { fetchProducts } from '../services/productsApi'
+import { sportsifyProducts } from '../utils/sportsify'
+import type { DisplayProduct } from '../types/DisplayProduct'
 
 const products = ref<DisplayProduct[]>([])
-const loading = ref(true)
-const error = ref<string | null>(null)
-
-const search = ref('')
-const selectedCategory = ref('all')
-
 const selectedProduct = ref<DisplayProduct | null>(null)
+const searchQuery = ref('')
+const selectedCategory = ref('all')
+const cart = ref<DisplayProduct[]>([])
+const isCartOpen = ref(false)
+const loading = ref(true)
+const errorMessage = ref('')
 
-// Load products
-async function loadProducts() {
-  loading.value = true
-  error.value = null
+const savedCart = localStorage.getItem('cart')
+if (savedCart) {
+  cart.value = JSON.parse(savedCart)
+}
 
+watch(
+  cart,
+  (newCart) => {
+    localStorage.setItem('cart', JSON.stringify(newCart))
+  },
+  { deep: true }
+)
+
+const loadProducts = async () => {
   try {
-    const data = await fetchProducts(30, 0)
+    loading.value = true
+    errorMessage.value = ''
+    const data = await fetchProducts(12, 0)
     products.value = sportsifyProducts(data.products)
-  } catch (e) {
-    error.value = 'Failed to fetch products'
+  } catch (error) {
+    errorMessage.value =
+      error instanceof Error ? error.message : 'Something went wrong'
   } finally {
     loading.value = false
   }
 }
 
-// Categories
-const categories = computed(() => {
-  const set = new Set(products.value.map((p) => p.category))
-  return ['all', ...set]
+onMounted(() => {
+  loadProducts()
 })
 
-// Filtering
+const categories = computed(() => {
+  const uniqueCategories = [...new Set(products.value.map((product) => product.category))]
+  return ['all', ...uniqueCategories]
+})
+
 const filteredProducts = computed(() => {
-  return products.value.filter((p) => {
-    const matchSearch =
-      p.title.toLowerCase().includes(search.value.toLowerCase()) ||
-      p.description.toLowerCase().includes(search.value.toLowerCase())
+  return products.value.filter((product) => {
+    const matchesSearch = product.title
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase())
 
-    const matchCategory =
+    const matchesCategory =
       selectedCategory.value === 'all' ||
-      p.category === selectedCategory.value
+      product.category === selectedCategory.value
 
-    return matchSearch && matchCategory
+    return matchesSearch && matchesCategory
   })
 })
 
-// Clear filters
-function clearFilters() {
-  search.value = ''
-  selectedCategory.value = 'all'
-}
-
-// Open product detail
-function selectProduct(product: DisplayProduct) {
+const openModal = (product: DisplayProduct) => {
   selectedProduct.value = product
 }
 
-// Close modal
-function closeProductDetail() {
+const closeModal = () => {
   selectedProduct.value = null
 }
 
-// Add to cart (emit to App.vue)
-function addToCart(product: DisplayProduct) {
-  emit('add-to-cart', product)
-  selectedProduct.value = null
+const addToCart = (product: DisplayProduct) => {
+  cart.value.push(product)
 }
 
-onMounted(loadProducts)
+const openCart = () => {
+  isCartOpen.value = true
+}
+
+const closeCart = () => {
+  isCartOpen.value = false
+}
+
+const removeCartItem = (index: number) => {
+  cart.value.splice(index, 1)
+}
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <main class="max-w-7xl mx-auto px-6 py-8">
+  <div class="min-h-screen bg-gradient-to-b from-slate-100 via-slate-50 to-white">
+    <NavBar
+      :cart-count="cart.length"
+      @open-cart="openCart"
+    />
 
-      <!-- PRODUCTS SECTION -->
-      <section id="products">
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Premium Hero Section -->
+      <section
+        class="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-slate-950 via-blue-950 to-slate-900 text-white shadow-2xl"
+      >
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.25),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(250,204,21,0.18),transparent_25%)]"></div>
 
-        <!-- FILTER + SEARCH -->
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-
-          <!-- Category -->
-          <div class="flex items-center gap-3 flex-wrap">
-            <label class="text-gray-700 font-medium">Category</label>
-
-            <select
-              v-model="selectedCategory"
-              class="border rounded-lg px-4 py-2 bg-white shadow-sm"
+        <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-10 px-8 py-12 md:px-12 md:py-16">
+          <div class="flex flex-col justify-center">
+            <span
+              class="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-blue-100 backdrop-blur"
             >
-              <option
-                v-for="category in categories"
-                :key="category"
-                :value="category"
-              >
-                {{ category }}
-              </option>
-            </select>
+              <span class="text-yellow-400">★</span>
+              Elite Sports Collection
+            </span>
 
-            <button
-              type="button"
-              @click="clearFilters"
-              class="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 transition"
-            >
-              Clear
-            </button>
-          </div>
+            <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
+              Premium Gear for
+              <span class="text-blue-400">Champions</span>
+            </h1>
 
-          <!-- Search -->
-          <div class="w-full md:w-96">
-            <div class="flex items-center gap-2 border rounded-lg bg-white px-4 py-2 shadow-sm">
-              <span class="text-gray-400">🔍</span>
-              <input
-                v-model="search"
-                type="text"
-                placeholder="Search sports items..."
-                class="w-full outline-none bg-transparent"
-              />
+            <p class="mt-5 max-w-2xl text-base md:text-lg text-slate-300 leading-8">
+              Discover professional-quality sports equipment designed for performance,
+              comfort, and style. Shop top categories, explore premium products, and build
+              your perfect game-day collection.
+            </p>
+
+            <div class="mt-8 flex flex-wrap gap-4">
+              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
+                <p class="text-2xl font-bold text-white">{{ products.length }}+</p>
+                <p class="text-sm text-slate-300">Premium Products</p>
+              </div>
+
+              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
+                <p class="text-2xl font-bold text-white">{{ categories.length - 1 }}</p>
+                <p class="text-sm text-slate-300">Sport Categories</p>
+              </div>
+
+              <div class="rounded-2xl bg-white/10 px-5 py-4 backdrop-blur border border-white/10">
+                <p class="text-2xl font-bold text-white">24/7</p>
+                <p class="text-sm text-slate-300">Fast Shopping</p>
+              </div>
             </div>
           </div>
 
-        </div>
+          <div class="flex items-center justify-center">
+            <div class="grid grid-cols-2 gap-4 w-full max-w-lg">
+              <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur">
+                <p class="text-4xl mb-3">⚽</p>
+                <h3 class="text-xl font-bold">Football</h3>
+                <p class="mt-2 text-sm text-slate-300">Training kits, boots, gloves and match essentials.</p>
+              </div>
 
-        <!-- LOADING -->
-        <div v-if="loading" class="text-center py-12 text-gray-500 text-lg">
-          Loading products...
-        </div>
+              <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur mt-8">
+                <p class="text-4xl mb-3">🏏</p>
+                <h3 class="text-xl font-bold">Cricket</h3>
+                <p class="mt-2 text-sm text-slate-300">Premium bats, gloves and performance accessories.</p>
+              </div>
 
-        <!-- ERROR -->
-        <div
-          v-else-if="error"
-          class="bg-red-100 text-red-700 px-4 py-3 rounded-lg"
-        >
-          {{ error }}
-        </div>
+              <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur -mt-2">
+                <p class="text-4xl mb-3">🏀</p>
+                <h3 class="text-xl font-bold">Basketball</h3>
+                <p class="mt-2 text-sm text-slate-300">Indoor and outdoor essentials for every player.</p>
+              </div>
 
-        <!-- PRODUCTS -->
-        <div v-else>
-
-          <div
-            v-if="filteredProducts.length === 0"
-            class="text-center py-12 text-gray-500"
-          >
-            No sports items found.
+              <div class="rounded-3xl bg-white/10 border border-white/10 p-6 backdrop-blur mt-6">
+                <p class="text-4xl mb-3">🎾</p>
+                <h3 class="text-xl font-bold">Tennis</h3>
+                <p class="mt-2 text-sm text-slate-300">Precision rackets and training-ready gear.</p>
+              </div>
+            </div>
           </div>
-
-          <ProductList
-            v-else
-            :products="filteredProducts"
-            @select="selectProduct"
-          />
         </div>
       </section>
 
-      <!-- ABOUT SECTION -->
-      <section id="about" class="mt-20">
-        <h2 class="text-3xl font-bold mb-6 text-gray-900">
-          About Our Store
-        </h2>
-
-        <p class="text-gray-600 mb-10 max-w-3xl">
-          Sports Item Store is a modern sports equipment shop built with Vue.
-          Our goal is to provide athletes, beginners, and professionals with
-          high-quality sports gear. You can browse, search, and explore many
-          sports items in one place.
-        </p>
-
-        <div class="grid md:grid-cols-3 gap-8">
-
-          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <div class="text-3xl mb-3">🏅</div>
-            <h3 class="font-semibold text-lg mb-2">Quality Equipment</h3>
-            <p class="text-gray-500 text-sm">
-              High-quality sports gear for training and fitness.
-            </p>
+      <!-- Premium Search/Filter Section -->
+      <section class="mt-8">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-2xl font-bold text-slate-900">Shop Collection</h2>
+            <p class="text-slate-500 mt-1">Find the right equipment for your sport.</p>
           </div>
 
-          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <div class="text-3xl mb-3">⚡</div>
-            <h3 class="font-semibold text-lg mb-2">Fast Browsing</h3>
-            <p class="text-gray-500 text-sm">
-              Quickly search and filter items with modern UI.
-            </p>
+          <div class="hidden md:flex items-center gap-3">
+            <span class="rounded-full bg-white shadow-sm border px-4 py-2 text-sm text-slate-600">
+              Showing <span class="font-bold text-slate-900">{{ filteredProducts.length }}</span> products
+            </span>
           </div>
-
-          <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-            <div class="text-3xl mb-3">🏋️</div>
-            <h3 class="font-semibold text-lg mb-2">30+ Items</h3>
-            <p class="text-gray-500 text-sm">
-              Growing collection of sports equipment.
-            </p>
-          </div>
-
         </div>
+
+        <FilterBar
+          v-model="searchQuery"
+          :categories="categories"
+          :selected-category="selectedCategory"
+          @update:selectedCategory="selectedCategory = $event"
+        />
       </section>
 
-      <!-- PRODUCT DETAIL MODAL -->
-      <ProductDetail
-        v-if="selectedProduct"
-        :product="selectedProduct"
-        @close="closeProductDetail"
+      <div class="md:hidden mb-6">
+        <span class="rounded-full bg-white shadow-sm border px-4 py-2 text-sm text-slate-600 inline-block">
+          Showing <span class="font-bold text-slate-900">{{ filteredProducts.length }}</span> products
+        </span>
+      </div>
+
+      <div
+        v-if="loading"
+        class="bg-white rounded-3xl shadow-sm border p-10 text-center text-slate-500"
+      >
+        Loading products...
+      </div>
+
+      <div
+        v-else-if="errorMessage"
+        class="bg-red-50 border border-red-200 text-red-600 rounded-3xl p-6"
+      >
+        {{ errorMessage }}
+      </div>
+
+      <ProductList
+        v-else
+        :products="filteredProducts"
+        @select="openModal"
         @add-to-cart="addToCart"
       />
-
     </main>
+
+    <ProductDetail
+      v-if="selectedProduct"
+      :product="selectedProduct"
+      @close="closeModal"
+      @add-to-cart="addToCart"
+    />
+
+    <CartSidebar
+      :cart="cart"
+      :is-open="isCartOpen"
+      @close="closeCart"
+      @remove-item="removeCartItem"
+    />
+
+    <Footer />
   </div>
 </template>

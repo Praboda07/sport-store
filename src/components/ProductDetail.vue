@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { DisplayProduct } from '../types/DisplayProduct'
 
-defineProps<{
+const props = defineProps<{
   product: DisplayProduct
 }>()
 
@@ -13,57 +13,61 @@ const emit = defineEmits<{
 
 <template>
   <div
-    class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
+    class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4"
     @click.self="emit('close')"
   >
-    <div class="bg-white rounded-2xl shadow-xl max-w-3xl w-full p-6 relative">
+    <div class="relative bg-white w-full max-w-5xl rounded-3xl shadow-2xl p-6 md:p-8">
       <button
         type="button"
-        class="absolute top-4 right-4 text-gray-500 hover:text-black text-xl"
         @click="emit('close')"
+        class="absolute top-4 right-4 text-3xl text-gray-400 hover:text-gray-700 transition"
       >
-        ✕
+        ×
       </button>
 
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
           <img
-            :src="product.thumbnail"
-            :alt="product.title"
-            class="w-full h-72 object-cover rounded-xl border"
+            :src="props.product.thumbnail"
+            :alt="props.product.title"
+            class="w-full h-[360px] object-cover rounded-2xl"
           />
         </div>
 
         <div>
-          <h2 class="text-2xl font-bold mb-3">{{ product.title }}</h2>
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">
+            {{ props.product.title }}
+          </h2>
 
-          <p class="text-blue-600 font-bold text-xl mb-3">
-            ${{ product.price }}
+          <p class="text-4xl font-bold text-blue-600 mb-4">
+            ${{ props.product.price }}
           </p>
 
-          <p class="text-yellow-500 mb-2">⭐ {{ product.rating }}</p>
-
-          <p class="text-sm text-gray-500 mb-4">
-            Category: {{ product.category }}
+          <p class="text-yellow-500 text-2xl mb-4">
+            ⭐ {{ props.product.rating }}
           </p>
 
-          <p class="text-gray-700 mb-6">
-            {{ product.description }}
+          <p class="text-gray-500 text-2xl mb-6">
+            Category: {{ props.product.category }}
           </p>
 
-          <div class="flex gap-3">
+          <p class="text-gray-600 text-2xl leading-relaxed mb-8">
+            {{ props.product.description }}
+          </p>
+
+          <div class="flex gap-4">
             <button
               type="button"
-              class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
-              @click="emit('add-to-cart', product)"
+              @click="emit('add-to-cart', props.product)"
+              class="bg-blue-600 text-white px-8 py-4 rounded-2xl text-2xl hover:bg-blue-700 transition"
             >
               Add to Cart
             </button>
 
             <button
               type="button"
-              class="border px-5 py-2 rounded-lg hover:bg-gray-100 transition"
               @click="emit('close')"
+              class="bg-gray-100 text-gray-800 px-8 py-4 rounded-2xl text-2xl hover:bg-gray-200 transition"
             >
               Close
             </button>

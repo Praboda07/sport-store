@@ -1,82 +1,67 @@
-<template>
-  <article
-    class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300"
-  >
-    <!-- Image -->
-    <div class="relative overflow-hidden">
-  <img
-    :src="product.thumbnail"
-    :alt="product.title"
-    class="w-full h-52 object-cover"
-  />
-
-  <!-- ✅ ADD HERE -->
-  <div
-    v-if="product.rating > 4.0"
-    class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded"
-  >
-    HOT
-  </div>
-</div>
-
-    <!-- Content -->
-    <div class="p-4">
-      <p class="text-xs font-semibold uppercase tracking-wide text-blue-600">
-        {{ product.category }}
-      </p>
-
-      <h3 class="text-xl font-bold text-gray-900 mt-2 line-clamp-1">
-        {{ product.title }}
-      </h3>
-
-      <!-- Rating -->
-      <div class="flex items-center gap-1 mt-2">
-        <span
-          v-for="i in 5"
-          :key="i"
-          class="text-yellow-400 text-sm"
-        >
-          {{ i <= Math.round(product.rating) ? '★' : '☆' }}
-        </span>
-        <span class="text-xs text-gray-500 ml-1">
-          ({{ product.rating.toFixed(1) }})
-        </span>
-      </div>
-
-      <p class="text-sm text-gray-600 mt-3 line-clamp-2 min-h-[48px]">
-        {{ product.description }}
-      </p>
-
-      <div class="flex items-center justify-between mt-5">
-        <span class="text-2xl font-bold text-blue-600">
-          ${{ product.price }}
-        </span>
-
-        <button
-          type="button"
-          class="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
-          @click="$emit('select', product)"
-        >
-          View Details
-        </button>
-      </div>
-    </div>
-  </article>
-</template>
-
 <script setup lang="ts">
 import type { DisplayProduct } from '../types/DisplayProduct'
 
-defineProps<{
+const props = defineProps<{
   product: DisplayProduct
 }>()
 
-defineEmits<{
+const emit = defineEmits<{
   (e: 'select', product: DisplayProduct): void
+  (e: 'add-to-cart', product: DisplayProduct): void
 }>()
-
-const onImageError = (event: Event) => {
-  const target = event.target as HTMLImageElement
-  target.src = 'https://picsum.photos/seed/sportfallback/600/400'
-}
 </script>
+
+<template>
+  <div
+    class="group rounded-[1.75rem] bg-white shadow-sm border border-slate-200 overflow-hidden cursor-pointer hover:shadow-2xl hover:-translate-y-1 transition duration-300"
+    @click="emit('select', props.product)"
+  >
+    <div class="relative overflow-hidden">
+      <img
+        :src="props.product.thumbnail"
+        :alt="props.product.title"
+        class="w-full h-64 object-cover group-hover:scale-105 transition duration-500"
+      />
+      <div class="absolute top-4 left-4">
+        <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-700 shadow-sm">
+          {{ props.product.category }}
+        </span>
+      </div>
+    </div>
+
+    <div class="p-5">
+      <div class="flex items-start justify-between gap-3">
+        <h2 class="text-xl font-bold text-slate-900 line-clamp-1">
+          {{ props.product.title }}
+        </h2>
+
+        <span class="text-sm font-semibold text-amber-500 whitespace-nowrap">
+          ⭐ {{ props.product.rating }}
+        </span>
+      </div>
+
+      <p class="text-sm text-slate-500 mt-3 line-clamp-2 leading-6">
+        {{ props.product.description }}
+      </p>
+
+      <div class="mt-5 flex items-center justify-between">
+        <div>
+          <p class="text-xs uppercase tracking-wide text-slate-400">
+            Price
+          </p>
+          <p class="text-2xl font-extrabold text-slate-900">
+            ${{ props.product.price }}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          @click.stop="emit('add-to-cart', props.product)"
+          class="rounded-2xl bg-slate-950 text-white px-5 py-3 hover:bg-blue-700 transition"
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
