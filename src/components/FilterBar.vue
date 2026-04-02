@@ -3,6 +3,7 @@ defineProps<{
   modelValue: string
   categories: string[]
   selectedCategory: string
+  darkMode: boolean
 }>()
 
 const emit = defineEmits<{
@@ -22,15 +23,28 @@ const onChange = (event: Event) => {
 </script>
 
 <template>
-  <div class="rounded-[2rem] bg-white/90 backdrop-blur shadow-xl border border-slate-200 p-5 md:p-6">
+  <div
+    class="rounded-[2rem] shadow-xl border p-5 md:p-6 transition-colors duration-300"
+    :class="
+      darkMode
+        ? 'bg-slate-900/90 border-slate-700'
+        : 'bg-white/90 border-slate-200'
+    "
+  >
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
       <div class="lg:col-span-8">
-        <label class="block text-sm font-semibold text-slate-700 mb-3">
+        <label
+          class="block text-sm font-semibold mb-3 transition-colors duration-300"
+          :class="darkMode ? 'text-slate-200' : 'text-slate-700'"
+        >
           Search products
         </label>
 
         <div class="relative">
-          <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
+          <span
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-lg"
+            :class="darkMode ? 'text-slate-400' : 'text-slate-400'"
+          >
             🔍
           </span>
 
@@ -39,20 +53,33 @@ const onChange = (event: Event) => {
             placeholder="Search premium sports gear..."
             :value="modelValue"
             @input="onInput"
-            class="w-full pl-12 pr-4 py-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            class="w-full pl-12 pr-4 py-4 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            :class="
+              darkMode
+                ? 'border-slate-700 bg-slate-800 text-white placeholder:text-slate-400'
+                : 'border-slate-200 bg-slate-50 text-slate-800 placeholder:text-slate-400'
+            "
           />
         </div>
       </div>
 
       <div class="lg:col-span-4">
-        <label class="block text-sm font-semibold text-slate-700 mb-3">
+        <label
+          class="block text-sm font-semibold mb-3 transition-colors duration-300"
+          :class="darkMode ? 'text-slate-200' : 'text-slate-700'"
+        >
           Category
         </label>
 
         <select
           :value="selectedCategory"
           @change="onChange"
-          class="w-full px-4 py-4 rounded-2xl border border-slate-200 bg-slate-50 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+          class="w-full px-4 py-4 rounded-2xl border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+          :class="
+            darkMode
+              ? 'border-slate-700 bg-slate-800 text-white'
+              : 'border-slate-200 bg-slate-50 text-slate-800'
+          "
         >
           <option
             v-for="category in categories"

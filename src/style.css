@@ -10,10 +10,11 @@ body,
   font-family: Inter, Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: linear-gradient(to bottom, #f1f5f9, #ffffff);
-}
-
 * {
   box-sizing: border-box;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }

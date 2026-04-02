@@ -8,4 +8,5 @@ export interface DisplayProduct {
   stock: number
   brand: string
   thumbnail: string
+  images?: string[]
 }
