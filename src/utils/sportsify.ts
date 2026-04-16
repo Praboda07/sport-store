@@ -212,7 +212,6 @@ const sportsItems = [
     price: 8900,
     thumbnail: 'https://m.media-amazon.com/images/I/71KOE6-f5uL._AC_SL1500_.jpg'
   },
-
   {
     title: 'Badminton Racket',
     description: 'Lightweight badminton racket built for speed, balance, and accurate shots.',
@@ -353,11 +352,15 @@ const sportsItems = [
     price: 1100,
     thumbnail: 'https://tse2.mm.bing.net/th/id/OIP.GkSCHFfTNYE-J--dNb8O_QHaFj?pid=Api&P=0&h=220'
   }
-]
+] as const
 
 export function sportsifyProducts(products: Product[]): DisplayProduct[] {
+  if (!sportsItems.length) {
+  return []
+}
+
   return products.map((p, index) => {
-    const item = sportsItems[index % sportsItems.length]
+    const item = sportsItems[index % sportsItems.length]!
 
     return {
       id: p.id,

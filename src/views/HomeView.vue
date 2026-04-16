@@ -130,6 +130,13 @@ const placeOrder = () => {
   localStorage.removeItem('cart')
   alert('Order placed successfully!')
 }
+
+const scrollToProducts = () => {
+  const section = document.getElementById('products')
+  if (section) {
+    section.scrollIntoView({ behavior: 'smooth' })
+  }
+}
 </script>
 
 <template>
@@ -150,6 +157,7 @@ const placeOrder = () => {
     />
 
     <main class="max-w-7xl mx-auto px-4 py-5 sm:py-8">
+      <!-- HERO SECTION -->
       <section
         class="relative overflow-hidden rounded-[2rem] text-white shadow-2xl"
         :class="
@@ -162,27 +170,51 @@ const placeOrder = () => {
 
         <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-6 px-5 py-6 sm:px-8 sm:py-12 md:px-12 md:py-16">
           <div class="flex flex-col justify-center">
-            <h1 class="mt-2 text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-              Next-Level Gear for
-              <span
-                :class="
-                  darkMode
-                    ? 'text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.7)]'
-                    : 'text-blue-400'
-                "
-              >
-                Champions
-              </span>
+            <span
+              class="inline-flex w-fit rounded-full px-4 py-2 text-sm font-medium mb-5"
+              :class="
+                darkMode
+                  ? 'bg-white/10 text-cyan-100'
+                  : 'bg-white/10 text-blue-100'
+              "
+            >
+              Power your performance
+            </span>
+
+            <h1
+              class="mt-2 text-3xl sm:text-4xl md:text-6xl font-extrabold leading-tight tracking-tight text-white drop-shadow-[0_0_10px_rgba(59,130,246,0.4)]"
+            >
+              Find the best sports gear
+              <br class="hidden sm:block" />
+              for every game.
             </h1>
 
-            <p class="mt-4 max-w-2xl text-xs sm:text-base md:text-lg leading-6 sm:leading-8 text-slate-300">
-              Discover elite sports equipment with premium visuals, modern style,
-              and a shopping experience built for speed and performance.
+            <p class="mt-4 max-w-2xl text-sm sm:text-base md:text-lg leading-6 sm:leading-8 text-slate-300">
+              Discover quality products for training, fitness, outdoor activities, and everyday sports style.
+              Built for speed, comfort, and performance.
             </p>
 
+            <!-- HERO BUTTONS -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-8">
+              <button
+                @click="scrollToProducts"
+                class="px-8 py-3 rounded-full bg-white text-slate-900 font-semibold text-lg shadow-lg hover:scale-105 hover:shadow-xl transition"
+              >
+                Shop Now
+              </button>
+
+              <button
+                @click="scrollToProducts"
+                class="px-8 py-3 rounded-full border border-white text-white font-semibold text-lg hover:bg-white hover:text-slate-900 transition"
+              >
+                Browse Categories
+              </button>
+            </div>
+
+            <!-- STATS -->
             <div class="mt-6 flex flex-wrap gap-3 sm:gap-4">
               <div
-                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto"
+                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto hover:scale-105 transition-transform duration-300"
                 :class="
                   darkMode
                     ? 'bg-cyan-400/10 border-cyan-400/20 shadow-[0_0_18px_rgba(34,211,238,0.16)]'
@@ -194,7 +226,7 @@ const placeOrder = () => {
               </div>
 
               <div
-                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto"
+                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto hover:scale-105 transition-transform duration-300"
                 :class="
                   darkMode
                     ? 'bg-blue-500/10 border-blue-400/20 shadow-[0_0_18px_rgba(59,130,246,0.14)]'
@@ -206,7 +238,7 @@ const placeOrder = () => {
               </div>
 
               <div
-                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto"
+                class="rounded-2xl px-4 py-3 sm:px-5 sm:py-4 backdrop-blur border w-[46%] sm:w-auto hover:scale-105 transition-transform duration-300"
                 :class="
                   darkMode
                     ? 'bg-violet-500/10 border-violet-400/20 shadow-[0_0_18px_rgba(168,85,247,0.14)]'
@@ -219,6 +251,7 @@ const placeOrder = () => {
             </div>
           </div>
 
+          <!-- RIGHT HERO CARDS -->
           <div class="hidden lg:flex items-center justify-center">
             <div class="grid grid-cols-2 gap-4 w-full max-w-lg">
               <div class="rounded-3xl border p-4 sm:p-6 backdrop-blur bg-white/5 border-cyan-400/20 shadow-[0_0_20px_rgba(34,211,238,0.1)]">
@@ -249,6 +282,7 @@ const placeOrder = () => {
         </div>
       </section>
 
+      <!-- COLLECTION -->
       <section id="collection" class="mt-8">
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
@@ -314,6 +348,7 @@ const placeOrder = () => {
         </span>
       </div>
 
+      <!-- STATES -->
       <div
         v-if="loading"
         class="rounded-3xl border p-10 text-center transition-colors duration-300"
@@ -333,15 +368,19 @@ const placeOrder = () => {
         {{ errorMessage }}
       </div>
 
-      <ProductList
-        v-else
-        :products="filteredProducts"
-        :dark-mode="darkMode"
-        @select="openModal"
-        @add-to-cart="addToCart"
-      />
+      <!-- PRODUCTS -->
+      <div id="products">
+        <ProductList
+          v-if="!loading && !errorMessage"
+          :products="filteredProducts"
+          :dark-mode="darkMode"
+          @select="openModal"
+          @add-to-cart="addToCart"
+        />
+      </div>
     </main>
 
+    <!-- MODALS -->
     <ProductDetail
       v-if="selectedProduct"
       :product="selectedProduct"

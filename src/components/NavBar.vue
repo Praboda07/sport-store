@@ -20,6 +20,8 @@ const emit = defineEmits<{
     "
   >
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-3">
+
+      <!-- LEFT: LOGO -->
       <div class="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
         <div
           class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center font-bold text-lg sm:text-xl shrink-0"
@@ -53,7 +55,20 @@ const emit = defineEmits<{
         </div>
       </div>
 
+      <!-- ✅ NEW: NAV LINKS -->
+      <nav
+        class="hidden md:flex items-center gap-8 font-semibold transition-all duration-300"
+        :class="darkMode ? 'text-cyan-300' : 'text-slate-700'"
+      >
+        <a href="#" class="hover:text-cyan-400 transition">Home</a>
+        <a href="#about" class="hover:text-cyan-400 transition">About</a>
+        <a href="#contact" class="hover:text-cyan-400 transition">Contact Us</a>
+      </nav>
+
+      <!-- RIGHT SIDE -->
       <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+
+        <!-- DARK MODE -->
         <button
           @click="emit('toggle-dark-mode')"
           class="relative w-14 sm:w-20 h-8 sm:h-10 flex items-center rounded-full p-1 transition-all duration-500 border"
@@ -75,6 +90,7 @@ const emit = defineEmits<{
           </div>
         </button>
 
+        <!-- CART -->
         <button
           type="button"
           @click="emit('open-cart')"
@@ -87,6 +103,7 @@ const emit = defineEmits<{
         >
           <span class="text-lg sm:text-xl">🛒</span>
           <span class="hidden sm:inline font-medium">Cart</span>
+
           <span
             class="absolute -top-2 -right-2 min-w-[22px] h-5 sm:min-w-[24px] sm:h-6 px-1.5 sm:px-2 rounded-full text-[10px] sm:text-xs font-bold flex items-center justify-center"
             :class="
@@ -98,6 +115,7 @@ const emit = defineEmits<{
             {{ cartCount }}
           </span>
         </button>
+
       </div>
     </div>
   </header>
